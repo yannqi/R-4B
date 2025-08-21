@@ -1,4 +1,4 @@
-# R-4B: Incentivizing General-Purpose Auto-Thinking in MLLMs via Bi-Mode Integration
+# R-4B: Incentivizing General-Purpose Auto-Thinking Capabilities in MLLMs via Bi-Mode Integration
 
 [[📚 Arxiv Paper (Coming soon)](https://huggingface.co/YannQi/R-4B)] [[🤗 Hugging Face](https://huggingface.co/YannQi/R-4B)]  [[🤖️ ModelScope](https://huggingface.co/YannQi/R-4B)] [[💻 Code](https://github.com/yannqi/R-4B)]
 
@@ -18,7 +18,22 @@ The development of R-4B follows a two-stage training paradigm:
 (1) Bi-mode Annealing, which establishes both thinking and non-thinking capabilities for VQA; and
 (2) Bi-mode Policy Optimization (BPO), which enables the model to adaptively switch between thinking and non-thinking modes based on input demands.
 
-R-4B achieves state-of-the-art performance among models of its scale. In evaluations across multiple public benchmarks, R-4B outperforms Qwen2.5-VL-7B on nearly all tasks. Notably, it matches or exceeds the performance of the much larger Kimi-VL-Thinking-2506 (3B activated, 16B total parameters).
+## 🚀 Key Features
+
+- 🧠 **Think Smart, Act Fast: Adaptive & Controllable Thinking!**
+  Our model provides three-mode control over the response process.
+
+  * **Auto-thinking Mode:** Unleash **auto-thinking** that works across general topics, from simple Q&A to complex scientific analysis. It saves time and computation by thinking only when it matters.
+  * **Support Manual Control:**  Explicitly command the model to use its `thinking` or `non-thinking` capabilities, enabling you to make your choices for every job.
+- 🏆  ** Strong Performance, Open for Everyone!**
+  Our model is now **fully open-source**. It achieves **state-of-the-art performance** among models of comparable size.
+
+## 📢 News
+
+- **[2025.08.20]** 🚀 **vLLM Support is Here!** Our R-4B model is now fully compatible with [vLLM](https://github.com/vllm-project/vllm) for high-performance inference.
+- **[2025.08.18]** 🏆 **Top Rank Achieved!** We are thrilled to announce that R-4B is now ranked #1 among all open-source models on the [OpenCompass Multi-modal Reasoning Leaderboard](https://rank.opencompass.org.cn/leaderboard-multimodal-reasoning/?m=REALTIME)!
+- **[2025.08.11]** 🥇 **Another #1!** R-4B ranks first under 20B parameters on the [OpenCompass Multi-modal Academic Leaderboard](https://rank.opencompass.org.cn/leaderboard-multimodal/?m=REALTIME)!
+- **[2025.08.05]** 🎉 **R-4B is Released!** Our model is now publicly available. You can download it from [Hugging Face](https://huggingface.co/YannQi/R-4B).
 
 ## 🔥 Quickstart
 
@@ -27,7 +42,7 @@ Below, we provide simple examples to show how to use R-4B with 🤗 Transformers
 ### Using 🤗 Transformers to Chat
 
 > [!NOTE]
-> Following Qwen3, we also offer a hard switch mechanism that lets users dynamically control the model's behavior.
+> Users can dynamically control the model's response by selecting one of three modes (`auto-thinking`, `thinking`, or `non-thinking`) with `enable_thinking`. `enable_thinking=auto` for `auto-thinking` mode; `enable_thinking=long` for `thinking` mode; `enable_thinking=short` for `non-thinking` mode;  
 
 ```python
 import requests
@@ -39,56 +54,44 @@ model_path = "YannQi/R-4B"
 
 model = AutoModel.from_pretrained(
     model_path,
-    torch_dtype=torch.float16,
+    torch_dtype=torch.float32,
     trust_remote_code=True,
-).to('cuda')
+).to("cuda")
 
-# default processer
 processor = AutoProcessor.from_pretrained(model_path, trust_remote_code=True)
 
-
-image_file = "http://images.cocodataset.org/val2017/000000039769.jpg"
 messages = [
     {
         "role": "user",
         "content": [
             {
                 "type": "image",
-                "image": f"{image_file}",
+                "image": "http://images.cocodataset.org/val2017/000000039769.jpg",
             },
-            {"type": "text", "text": "描述该图片。"},
+            {"type": "text", "text": "Describe this image."},
         ],
     }
 ]
 
 # Preparation for inference
+text = processor.apply_chat_template(messages, tokenize=False, add_generation_prompt=True, thinking_mode="auto")
 
-text_auto_thinking = processor.apply_chat_template(
-    messages, tokenize=False, add_generation_prompt=True)  #  thinking_mode='long' for thinking mode;  thinking_mode='short' for non-thinking mode; Defalut is auto-thinking mode.
+image = Image.open(requests.get("http://images.cocodataset.org/val2017/000000039769.jpg", stream=True).raw)
 
-raw_image = Image.open(requests.get(image_file, stream=True).raw)
-
-inputs_auto_thinking = processor(images=raw_image, text=text_auto_thinking, return_tensors='pt').to(0, torch.float16)
-
-inputs_auto_thinking = inputs_auto_thinking.to("cuda")
-
+inputs = processor(images=image, text=text, return_tensors="pt").to("cuda")
 
 # Inference: Generation of the output
+generated_ids = model.generate(**inputs, max_new_tokens=16384)
+output_ids = generated_ids[0][len(inputs.input_ids[0]) :]
 
-
-generated_ids_auto_thinking = model.generate(**inputs_auto_thinking, max_new_tokens=8192)
-generated_ids_trimmed_auto_thinking = [
-    out_ids[len(in_ids) :] for in_ids, out_ids in zip(inputs_auto_thinking.input_ids, generated_ids_auto_thinking)
-]
-
-
-output_text_auto_thinking = processor.batch_decode(
-            generated_ids_trimmed_auto_thinking, skip_special_tokens=True, clean_up_tokenization_spaces=False
+# Decode output directly
+output_text = processor.decode(
+    output_ids,
+    skip_special_tokens=True,
+    clean_up_tokenization_spaces=False,
 )
 
-
-print("Auto Thinking Output:", output_text_auto_thinking)
-
+print("Auto-Thinking Output:", output_text)
 ```
 
 </details>
@@ -107,89 +110,10 @@ cd vllm
 VLLM_USE_PRECOMPILED=1 uv pip install --editable .
 ```
 
-##### Offline Inference
-
-```python
-import os
-from transformers import AutoProcessor
-from vllm import LLM, SamplingParams
-from PIL import Image
-import requests
-from io import BytesIO
-
-
-def load_image(image_path):
-    """Load image from URL or local path"""
-    if image_path.startswith(('http://', 'https://')):
-        response = requests.get(image_path, timeout=10)
-        response.raise_for_status()
-        image = Image.open(BytesIO(response.content))
-    else:
-        image = Image.open(image_path)
-  
-    # Convert RGBA to RGB if needed
-    if image.mode == "RGBA":
-        background = Image.new('RGB', image.size, (255, 255, 255))
-        background.paste(image, mask=image.split()[-1])
-        image = background
-  
-    return image.convert("RGB")
-
-
-def main():
-
-    model_path = "YannQi/R-4B/"
-
-    llm = LLM(
-        model=model_path,
-        limit_mm_per_prompt={"image": 5},
-        trust_remote_code=True,
-        tensor_parallel_size=1,  
-        gpu_memory_utilization=0.8, 
-    )
-
-    sampling_params = SamplingParams(
-        temperature=0.8,
-        max_tokens=16384,
-    )
-
-    image_url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-    image = load_image(image_url)
-    text = "Describe this image."
-
-    messages = [
-        {
-            "role": "user",
-            "content": [
-                {"type": "image", "image": image},
-                {"type": "text", "text": text},
-            ],
-        },
-    ]
-
-    processor = AutoProcessor.from_pretrained(model_path, trust_remote_code=True)
-    prompt = processor.apply_chat_template(
-        messages,
-        tokenize=False,
-        add_generation_prompt=True,
-    )
-
-    mm_data = {"image": image}
-    llm_inputs = {
-        "prompt": prompt,
-        "multi_modal_data": mm_data,
-    }
-
-    outputs = llm.generate([llm_inputs], sampling_params=sampling_params)
-    generated_text = outputs[0].outputs[0].text
-
-    print(generated_text)
-
-if __name__ == '__main__':
-    main()
-```
-
 ##### Online Serving
+
+> [!TIP]
+> The `thinking_mode` switch is also available in APIs created by [vLLM](https://github.com/vllm-project/vllm).
 
 - Serve
 
@@ -230,32 +154,6 @@ image_messages = [
                 "type": "image_url",
                 "image_url": {
                     "url": "http://images.cocodataset.org/val2017/000000039769.jpg"
-                },
-            },
-            {"type": "text", "text": "Describe this image."},
-        ],
-    },
-]
-
-chat_response = client.chat.completions.create(
-    model="rvl",
-    messages=image_messages,
-)
-print("Chat response:", chat_response)
-
-# image base64-encoded
-image_path = "/path/to/local/image.png"
-with open(image_path, "rb") as f:
-    encoded_image = base64.b64encode(f.read())
-encoded_image_text = encoded_image.decode("utf-8")
-image_messages = [
-    {
-        "role": "user",
-        "content": [
-            {
-                "type": "image_url",
-                "image_url": {
-                    "url": f"data:image;base64,{encoded_image_text}"
                 },
             },
             {"type": "text", "text": "Describe this image."},
