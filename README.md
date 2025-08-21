@@ -23,8 +23,8 @@ The development of R-4B follows a two-stage training paradigm:
 - 🧠 **Think Smart, Act Fast: Adaptive & Controllable Thinking!**
   Our model provides three-mode control over the response process.
 
-  * **Auto-thinking Mode:** Unleash **auto-thinking** that works across general topics, from simple Q&A to complex scientific analysis. It saves time and computation by thinking only when it matters.
-  * **Support Manual Control:**  Explicitly command the model to use its `thinking` or `non-thinking` capabilities, enabling you to make your choices for every job.
+  - **Auto-thinking Mode:** Unleash **auto-thinking** that works across general topics, from simple Q&A to complex scientific analysis. It saves time and computation by thinking only when it matters.
+  - **Support Manual Control:**  Explicitly command the model to use its `thinking` or `non-thinking` capabilities, enabling you to make your choices for every job.
 - 🏆  ** Strong Performance, Open for Everyone!**
   Our model is now **fully open-source**. It achieves **state-of-the-art performance** among models of comparable size.
 
