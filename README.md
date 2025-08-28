@@ -181,20 +181,6 @@ print("Chat response:", chat_response)
 
 Coming soon!
 
-<!-- If you find our work helpful for your research, please consider citing our work. -->
-
-<!-- 
-```bibtex
-@misc{R-4B,
-      title={R-4B: Adaptive Vision-Language Reasoning for Efficient Inference}, 
-      author={Z},
-      year={2025},
-      eprint={ },
-      archivePrefix={arXiv},
-      primaryClass={cs.CV},
-      url={ }, 
-}
-``` -->
 
 ## Acknowledgements
 
