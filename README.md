@@ -1,4 +1,4 @@
-# R-4B: Incentivizing General-Purpose Auto-Thinking Capability in MLLMs via Bi-Mode Bi-Mode Annealing and Reinforce Learning
+# R-4B: Incentivizing General-Purpose Auto-Thinking Capability in MLLMs via Bi-Mode Annealing and Reinforce Learning
 
 [[📚 Arxiv Paper (Coming soon)](https://huggingface.co/YannQi/R-4B)] [[🤗 Hugging Face](https://huggingface.co/YannQi/R-4B)]  [[🤖️ ModelScope](https://huggingface.co/YannQi/R-4B)] [[💻 Code](https://github.com/yannqi/R-4B)]
 
