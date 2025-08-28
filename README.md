@@ -32,7 +32,7 @@ The development of R-4B follows a two-stage training paradigm:
 
 - **[2025.08.20]** 🚀 **vLLM Support is Here!** Our R-4B model is now fully compatible with [vLLM](https://github.com/vllm-project/vllm) for high-performance inference.
 - **[2025.08.18]** 🏆 **Top Rank Achieved!** We are thrilled to announce that R-4B is now ranked #1 among all open-source models on the [OpenCompass Multi-modal Reasoning Leaderboard](https://rank.opencompass.org.cn/leaderboard-multimodal-reasoning/?m=REALTIME)!
-- **[2025.08.11]** 🥇 **Another #1!** R-4B ranks first under 20B parameters on the [OpenCompass Multi-modal Academic Leaderboard](https://rank.opencompass.org.cn/leaderboard-multimodal/?m=REALTIME)!
+- **[2025.08.11]** 🥇 **Rank #1!** R-4B ranks first under 20B parameters on the [OpenCompass Multi-modal Academic Leaderboard](https://rank.opencompass.org.cn/leaderboard-multimodal/?m=REALTIME)!
 - **[2025.08.05]** 🎉 **R-4B is Released!** Our model is now publicly available. You can download it from [Hugging Face](https://huggingface.co/YannQi/R-4B).
 
 ## 🔥 Quickstart
@@ -46,20 +46,23 @@ Below, we provide simple examples to show how to use R-4B with 🤗 Transformers
 
 ```python
 import requests
+from PIL import Image
 import torch
 from transformers import AutoModel, AutoProcessor
-from PIL import Image
 
 model_path = "YannQi/R-4B"
 
+# Load model
 model = AutoModel.from_pretrained(
     model_path,
     torch_dtype=torch.float32,
     trust_remote_code=True,
 ).to("cuda")
 
+# Load processor
 processor = AutoProcessor.from_pretrained(model_path, trust_remote_code=True)
 
+# Define conversation messages
 messages = [
     {
         "role": "user",
@@ -73,24 +76,37 @@ messages = [
     }
 ]
 
-# Preparation for inference
-text = processor.apply_chat_template(messages, tokenize=False, add_generation_prompt=True, thinking_mode="auto")
+# Apply chat template
+text = processor.apply_chat_template(
+    messages,
+    tokenize=False,
+    add_generation_prompt=True,
+    thinking_mode="auto"
+)
 
-image = Image.open(requests.get("http://images.cocodataset.org/val2017/000000039769.jpg", stream=True).raw)
+# Load image
+image_url = "http://images.cocodataset.org/val2017/000000039769.jpg"
+image = Image.open(requests.get(image_url, stream=True).raw)
 
-inputs = processor(images=image, text=text, return_tensors="pt").to("cuda")
+# Process inputs
+inputs = processor(
+    images=image,
+    text=text,
+    return_tensors="pt"
+).to("cuda")
 
-# Inference: Generation of the output
+# Generate output
 generated_ids = model.generate(**inputs, max_new_tokens=16384)
-output_ids = generated_ids[0][len(inputs.input_ids[0]) :]
+output_ids = generated_ids[0][len(inputs.input_ids[0]):]
 
-# Decode output directly
+# Decode output
 output_text = processor.decode(
     output_ids,
     skip_special_tokens=True,
-    clean_up_tokenization_spaces=False,
+    clean_up_tokenization_spaces=False
 )
 
+# Print result
 print("Auto-Thinking Output:", output_text)
 ```
 
@@ -113,14 +129,15 @@ VLLM_USE_PRECOMPILED=1 uv pip install --editable .
 ##### Online Serving
 
 > [!TIP]
-> The `thinking_mode` switch is also available in APIs created by [vLLM](https://github.com/vllm-project/vllm).
+> The `thinking_mode` switch is also available in APIs created by [vLLM](https://github.com/vllm-project/vllm). 
+> Default is `auto-thinking`.
 
 - Serve
 
 ```bash
 vllm serve \
     yannqi/R-4B \
-    --served-model-name rvl \
+    --served-model-name r4b \
     --tensor-parallel-size 8 \
     --gpu-memory-utilization 0.8 \
     --host 0.0.0.0 \
@@ -161,9 +178,15 @@ image_messages = [
     },
 ]
 
+
+
 chat_response = client.chat.completions.create(
-    model="rvl",
+    model="r4b",
     messages=image_messages,
+    max_tokens=16384,
+    extra_body={
+        "chat_template_kwargs": {"thinking_mode": "auto"},
+    },
 )
 print("Chat response:", chat_response)
 ```
