@@ -42,7 +42,8 @@ Below, we provide simple examples to show how to use R-4B with 🤗 Transformers
 ### Using 🤗 Transformers to Chat
 
 > [!NOTE]
-> Users can dynamically control the model's response by selecting one of three modes (`auto-thinking`, `thinking`, or `non-thinking`) with `thinking_mode`. `thinking_mode=auto` for `auto-thinking` mode; `thinking_mode=long` for `thinking` mode; `thinking_mode=short` for `non-thinking` mode;
+> Users can dynamically control the model's response by selecting one of three modes (`auto-thinking`, `thinking`, or `non-thinking`) with `thinking_mode`. `thinking_mode=auto` for `auto-thinking` mode; `thinking_mode=long` for `thinking` mode; `thinking_mode=short` for `non-thinking` mode.
+> Default is `auto-thinking`.
 
 ```python
 import requests
