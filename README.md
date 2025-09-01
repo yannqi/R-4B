@@ -2,6 +2,7 @@
 
 [[📚 Arxiv Paper](https://arxiv.org/pdf/2508.21113)] [[🤗 Hugging Face](https://huggingface.co/YannQi/R-4B)]  [[🤖️ ModelScope](https://huggingface.co/YannQi/R-4B)] [[💻 Code](https://github.com/yannqi/R-4B)]
 
+
 <div align="center">
 <img src="asset/logo_R_4B.png" alt="logo" width="38" /> 
 </div>
@@ -42,7 +43,8 @@ Below, we provide simple examples to show how to use R-4B with 🤗 Transformers
 ### Using 🤗 Transformers to Chat
 
 > [!NOTE]
-> Users can dynamically control the model's response by selecting one of three modes (`auto-thinking`, `thinking`, or `non-thinking`) with `thinking_mode`. `thinking_mode=auto` for `auto-thinking` mode; `thinking_mode=long` for `thinking` mode; `thinking_mode=short` for `non-thinking` mode;
+> Users can dynamically control the model's response by selecting one of three modes (`auto-thinking`, `thinking`, or `non-thinking`) with `thinking_mode`. `thinking_mode=auto` for `auto-thinking` mode; `thinking_mode=long` for `thinking` mode; `thinking_mode=short` for `non-thinking` mode.
+> Default is `auto-thinking`.
 
 ```python
 import requests
