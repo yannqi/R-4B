@@ -2,3 +2,4 @@ third_party/*
 **/third_party/**/
 /qi
 /qi/*
+.vscode/

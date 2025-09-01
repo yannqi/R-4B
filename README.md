@@ -1,6 +1,6 @@
 # R-4B: Incentivizing General-Purpose Auto-Thinking Capability in MLLMs via Bi-Mode Annealing and Reinforce Learning
 
-[[📚 Arxiv Paper (Coming soon)](https://huggingface.co/YannQi/R-4B)] [[🤗 Hugging Face](https://huggingface.co/YannQi/R-4B)]  [[🤖️ ModelScope](https://huggingface.co/YannQi/R-4B)] [[💻 Code](https://github.com/yannqi/R-4B)]
+[[📚 Arxiv Paper](https://arxiv.org/pdf/2508.21113)] [[🤗 Hugging Face](https://huggingface.co/YannQi/R-4B)]  [[🤖️ ModelScope](https://huggingface.co/YannQi/R-4B)] [[💻 Code](https://github.com/yannqi/R-4B)]
 
 <div align="center">
 <img src="asset/logo_R_4B.png" alt="logo" width="38" /> 
@@ -194,7 +194,7 @@ print("Chat response:", chat_response)
 ## 📈 Experimental Results
 
 <div align="center">
-  <img src="asset/performance.png" width="100%" alt="R-4B Performance">
+  <img src="asset/performance_tab.png" width="100%" alt="R-4B Performance">
 </div>
 
 1. R-4B establishes itself with powerful, state-of-the-art perceptual abilities that are competitive with larger models.
@@ -202,7 +202,18 @@ print("Chat response:", chat_response)
 
 ## ✒️ Citation
 
-Coming soon!
+
+```
+@misc{jiang2025r4bincentivizinggeneralpurposeautothinking,
+      title={R-4B: Incentivizing General-Purpose Auto-Thinking Capability in MLLMs via Bi-Mode Annealing and Reinforce Learning}, 
+      author={Jie Jiang and Qi Yang and Bolin Ni and Shiming Xiang and Han Hu and Houwen Peng},
+      year={2025},
+      eprint={2508.21113},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2508.21113}, 
+}
+```
 
 ## Acknowledgements
 
