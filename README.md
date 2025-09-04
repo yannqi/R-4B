@@ -206,9 +206,9 @@ print("Chat response:", chat_response)
 
 
 ```
-@misc{jiang2025r4bincentivizinggeneralpurposeautothinking,
+@misc{yang2025r4bincentivizinggeneralpurposeautothinking,
       title={R-4B: Incentivizing General-Purpose Auto-Thinking Capability in MLLMs via Bi-Mode Annealing and Reinforce Learning}, 
-      author={Jie Jiang and Qi Yang and Bolin Ni and Shiming Xiang and Han Hu and Houwen Peng},
+      author={Qi Yang and Bolin Ni and Shiming Xiang and Han Hu and Houwen Peng and Jie Jiang},
       year={2025},
       eprint={2508.21113},
       archivePrefix={arXiv},
